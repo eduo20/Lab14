@@ -1,10 +1,14 @@
 using Lab14.Components;
+using Lab14.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// En Program.cs, antes de builder.Build();
+builder.Services.AddScoped<RegistrosServices>();
 
 var app = builder.Build();
 

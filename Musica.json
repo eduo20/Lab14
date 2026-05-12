@@ -1,0 +1,31 @@
+[
+  {
+    "tituloAlbum": "JUAN",
+    "artistaAlbum": "JUANIN JUAN JARRIS",
+    "ListaCanciones": [
+      {
+        "tituloCancion": "JUANITO",
+        "artistaCancion": "JUANIN JUAN JARRIS .ft Juan Carlos Bodoque",
+        "tiempoDuracion": "11:00"
+      },
+      {
+        "tituloCancion": "JUANIN",
+        "artistaCancion": "JUANIN JUAN JARRIS ft. Tulio Trivi\u00F1o",
+        "tiempoDuracion": "10:30"
+      }
+    ],
+    "AlbumDate": "2026-05-01T00:00:00"
+  },
+  {
+    "tituloAlbum": "NAVIDAD",
+    "artistaAlbum": "Luis Miguel",
+    "ListaCanciones": [
+      {
+        "tituloCancion": "Dulce navidad",
+        "artistaCancion": "Luis Miguel",
+        "tiempoDuracion": "3:12"
+      }
+    ],
+    "AlbumDate": "2026-12-31T00:00:00"
+  }
+]

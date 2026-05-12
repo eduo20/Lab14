@@ -1,0 +1,123 @@
+﻿@page "/nuevoalbum"
+@using Lab14.Models
+@using Lab14.Services
+@inject RegistrosServices MiServicio
+@inject NavigationManager Nav
+
+<h3>Registrar Nuevo Álbum</h3>
+
+<div class="card p-3 mb-4">
+    <div class="row">
+        <div class="col-md-6">
+            <label>Título del Álbum:</label>
+            <input type="text" class="form-control" @bind="album.tituloAlbum" />
+        </div>
+        <div class="col-md-6">
+            <label>Artista del Álbum:</label>
+            <input type="text" class="form-control" @bind="album.artistaAlbum" />
+        </div>
+        <div class="col-md-6 mt-2">
+            <label>Fecha de Publicación:</label>
+            <input type="date" class="form-control" @bind="album.AlbumDate" />
+        </div>
+    </div>
+</div>
+
+<h4>Agregar Canciones</h4>
+<div class="card p-3 bg-light">
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Nombre canción" @bind="nuevaCancion.tituloCancion" />
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Artista canción" @bind="nuevaCancion.artistaCancion" />
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" placeholder="00:00" @bind="nuevaCancion.tiempoDuracion" />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-success w-100" @onclick="AgregarCancionALista">Añadir</button>
+        </div>
+    </div>
+</div>
+
+@if (album.ListaCanciones.Any())
+{
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Artista</th>
+                <th>Duración</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in album.ListaCanciones)
+            {
+                <tr>
+                    <td>@c.tituloCancion</td>
+                    <td>@c.artistaCancion</td>
+                    <td>@c.tiempoDuracion</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@if (mostrarMensaje)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>¡Éxito!</strong> El registro se ha guardado.
+        <button type="button" class="btn-close" @onclick="() => mostrarMensaje = false"></button>
+    </div>
+}
+
+<button @onclick="Guardar">Guardar</button>
+
+<div class="mt-4">
+    <button class="btn btn-primary btn-lg" @onclick="GuardarTodoElAlbum">💾 Guardar Álbum Completo</button>
+</div>
+
+@code {
+    private Album album = new Album { AlbumDate = DateTime.Now };
+    private Canciones nuevaCancion = new Canciones();
+
+    private void AgregarCancionALista()
+    {
+        if (!string.IsNullOrWhiteSpace(nuevaCancion.tituloCancion))
+        {
+            // Agregamos una copia de la canción a la lista del álbum
+            album.ListaCanciones.Add(new Canciones
+            {
+                tituloCancion = nuevaCancion.tituloCancion,
+                artistaCancion = nuevaCancion.artistaCancion,
+                tiempoDuracion = nuevaCancion.tiempoDuracion
+            });
+
+            // Limpiamos los campos de la canción para la siguiente
+            nuevaCancion = new Canciones();
+        }
+    }
+
+    private void GuardarTodoElAlbum()
+    {
+        if (!string.IsNullOrWhiteSpace(album.tituloAlbum))
+        {
+
+            MiServicio.GuardarRegistro(album);
+            Nav.NavigateTo("/Selectordemusica"); // Nos regresa a la lista que ya tienes hecha
+
+        }
+    }
+
+    private bool mostrarMensaje = false;
+
+    private async Task Guardar()
+    {
+        // Lógica de guardar...
+        mostrarMensaje = true;
+
+        // Opcional: Desaparecer el mensaje después de 3 segundos
+        await Task.Delay(3000);
+        mostrarMensaje = false;
+    }
+}

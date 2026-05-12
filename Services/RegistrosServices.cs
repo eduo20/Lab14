@@ -68,5 +68,13 @@ namespace Lab14.Services
             string json = JsonSerializer.Serialize(albums, options);
             File.WriteAllText(_rutaRegistros, json);
         }
+
+        public List<Album> FiltrarPorArtista(string nombreArtista)
+        {
+            var todos = ObtenerRegistros();
+            if (string.IsNullOrWhiteSpace(nombreArtista)) return todos;
+
+            return todos.Where(a => a.artistaAlbum.Contains(nombreArtista, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
     }
 }
