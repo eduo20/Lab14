@@ -1,4 +1,5 @@
 ﻿@page "/nuevoalbum"
+@page "/nuevoalbum/{TituloAEditar}"
 @using Lab14.Models
 @using Lab14.Services
 @inject RegistrosServices MiServicio
@@ -70,16 +71,48 @@
         <button type="button" class="btn-close" @onclick="() => mostrarMensaje = false"></button>
     </div>
 }
-
-<button @onclick="Guardar">Guardar</button>
-
 <div class="mt-4">
-    <button class="btn btn-primary btn-lg" @onclick="GuardarTodoElAlbum">💾 Guardar Álbum Completo</button>
+    <button class="btn btn-primary btn-lg" @onclick="GuardarTodoElAlbum">
+        💾 @(string.IsNullOrEmpty(TituloAEditar) ? "Guardar Álbum Completo" : "Actualizar Cambios")
+    </button>
+    <button class="btn btn-secondary btn-lg" @onclick='() => Nav.NavigateTo("/Selectordemusica")'>Cancelar</button>
+</div>
+
+<div class = "col-md-6">    
+    <label> Titulo del album</label>
+    <input type="text" class="form-control" @bind="album.tituloAlbum" readonly="@(!string.IsNullOrEmpty(TituloAEditar))" />
+    @if(!string.IsNullOrEmpty(TituloAEditar))
+    {
+        <small class="text-muted">El título no se puede editar para evitar conflictos en el JSON.</small>
+	}
+	)
+
 </div>
 
 @code {
+	[Parameter] public string TituloAEditar { get; set; } = "";
     private Album album = new Album { AlbumDate = DateTime.Now };
     private Canciones nuevaCancion = new Canciones();
+
+
+    // 2. Este método se ejecuta al cargar la página
+    protected override void OnInitialized()
+    {
+        // Si la URL tiene un título, significa que queremos EDITAR
+        if (!string.IsNullOrEmpty(TituloAEditar))
+        {
+            var albumEncontrado = MiServicio.ObtenerRegistros()
+                .FirstOrDefault(a => a.tituloAlbum == TituloAEditar);
+
+            if (albumEncontrado != null)
+            {
+                // Cargamos los datos del JSON al objeto "album" de esta página
+                album = albumEncontrado;
+            }
+        }
+    }
+
+
 
     private void AgregarCancionALista()
     {
@@ -102,10 +135,18 @@
     {
         if (!string.IsNullOrWhiteSpace(album.tituloAlbum))
         {
-
-            MiServicio.GuardarRegistro(album);
-            Nav.NavigateTo("/Selectordemusica"); // Nos regresa a la lista que ya tienes hecha
-
+            if (string.IsNullOrEmpty(TituloAEditar))
+            {
+                // Si no había título en la URL, es uno NUEVO
+                MiServicio.GuardarRegistro(album);
+            }
+            else
+            {
+                // Si había título, llamamos al método de ACTUALIZAR
+                MiServicio.Actualizar(album);
+            }
+            
+            Nav.NavigateTo("/Selectordemusica");
         }
     }
 

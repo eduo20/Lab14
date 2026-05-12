@@ -1,4 +1,5 @@
 ﻿@page "/Selectordemusica"
+@inject NavigationManager Nav
 @using Lab14.Models
 @using Lab14.Services
 @inject RegistrosServices MiServicio
@@ -28,6 +29,7 @@
         <div class="row">
             @foreach (var album in albumesFiltrados)
             {
+                    
                 <div class="col-md-6 mb-3">
                     <div class="card shadow-sm">
                         <div class="card-body">
@@ -44,8 +46,19 @@
                                         @cancion.tituloCancion - @cancion.artistaCancion
                                         <span class="badge bg-secondary">@cancion.tiempoDuracion</span>
                                     </li>
+
+                                    
+
                                 }
+
+                                
                             </ul>
+                            @* AGREGAR ESTE BOTÓN *@
+                            <div class="mt-3">
+                                <button class="btn btn-warning btn-sm" @onclick="() => IrAEditar(album.tituloAlbum)">
+                                    ✏️ Editar Álbum
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -84,5 +97,11 @@
     {
         busquedaArtista = "";
         albumesFiltrados = MiServicio.ObtenerRegistros();
+    }
+
+    private void IrAEditar(string titulo)
+    {
+        // Navega a nuevoalbum pasando el título en la URL
+        Nav.NavigateTo($"/nuevoalbum/{titulo}");
     }
 }
